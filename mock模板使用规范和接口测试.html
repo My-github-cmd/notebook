@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mock模拟接口</title>
+    <script src="./mock-min.js"></script>
+    <script src="./jquery.min.js"></script>
+</head>
+
+<body>
+    <div onclick="cli()">点击</div>
+    <p>
+        数据模板定义规范：'name|rule':value   模板中每个属性由3部分构成，属性名，规则，属性值
+        属性值是string：
+            'name|min-max': value   如1-3，重复生成1-3个string
+            'name|count': string    如count=2，即重复生成2个string
+        属性值是number：
+            'name|+1': number       属性值自动加1，初始值为number
+            'name|min-max': number  生成一个大于min,小于max的数，number=100，这个只是用来确定类型
+        其它的模板一样的：参照文档：https://github.com/nuysoft/Mock/wiki/Syntax-Specification
+    </p>
+    <script>
+        function cli() {
+            var url = "http://api.com";
+            var data = Mock.mock(url, {
+                'name': '@cname', //中文名称
+                'age|1-100': 100, //100以内随机整数
+                'birthday': '@date("yyyy-MM-dd")', //日期
+                'city': '@city(true)', //中国城市
+            })
+            $.ajax({
+                url,
+                type: 'post',
+                contentType: 'text/plain',
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
